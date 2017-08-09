@@ -1,4 +1,4 @@
-psoViz
+psoViz **(WORK IN PROGRESS)**
 ============
 
 **psoViz** implements a Visualization of particles' behavior in a simple particle swarm optimisation algorithm (pso) using D3.js.
