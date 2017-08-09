@@ -1,0 +1,167 @@
+/* Page */
+body { 
+  margin: 0; 
+  padding: 0; 
+  font-size: 13px;
+  font-family: calibri; 
+  color: #919191; 
+  background-color: #424242;
+}
+
+.clear: after {
+  content: "."; 
+  display: block; 
+  height: 0; 
+  clear: both; 
+  visibility: hidden; 
+  line-height: 0; 
+}
+.clear {
+  display: block; 
+  clear: both; 
+}
+html[xmlns] .clear{
+  display: block; 
+}
+* html .clear{
+  height: 1%; 
+}
+
+article, figcaption, figure, section{
+  display: block; 
+  margin: 0; 
+  padding: 0;
+}
+
+wrapper {
+  display: block; 
+  width: 100%;
+  margin: 0; 
+  padding: 0; 
+  text-align: left;
+}
+
+.row { 
+  color: #979797; 
+  background-color: #E9E9E9;
+}
+.row a { 
+  color: #FF9900; 
+  background-color: #E9E9E9;
+}
+
+#header, #container {
+  display: block; 
+  width: 960px; 
+  margin: 0 auto;
+}
+
+ul {
+  margin: 0; 
+  padding: 0; 
+  list-style: none;
+}
+
+h1, h2 { 
+  margin: 0; 
+  padding: 0; 
+  font-size:22px;
+  font-weight: normal; 
+  line-height: normal;
+}
+
+h1 {
+  color: #FF9900;
+}
+
+h2 {
+  color: #3299BB;
+}
+
+.contentBox {
+  display:block; 
+  float:left; 
+  margin:0 20px 0 0;
+  width: 470px; 
+}
+
+.lastBox{ 
+  margin-right: 0; 
+}
+
+#container { 
+  padding: 30px 0; 
+}
+#container section { 
+  display: block; 
+  margin-bottom: 30px; 
+  padding: 0; 
+}
+#container .last { 
+  margin: 0; 
+}
+
+#container #graph { 
+  width: 100%; 
+}
+#container #graph figure div { 
+  float: right; 
+  width: 630px; 
+  height: 480px; 
+}
+#container #graph figure figcaption { 
+  display: block; 
+  float: left; 
+  width: 290px; 
+  height: 440px; 
+  padding: 20px;
+  overflow: hidden; 
+  color: #BCBCBC; 
+  background-color: 
+  #424242; 
+  line-height: 1.6em; 
+}
+#container #graph figure h2 { 
+  font-size: 42px; 
+  font-weight: normal; 
+  text-transform: none; 
+}
+
+#container #content { 
+  width: 100%; 
+  margin-bottom: 60px; 
+  padding-bottom: 100px; 
+  border-bottom: 1px solid #BCBCBC; 
+}
+#container #content section { 
+  width: 100%; 
+}
+#container #content section article h2 { 
+  margin-bottom: 15px; 
+}
+#container #content section article figure ul { 
+  display: block; 
+  width: 100%; 
+  margin: 0; 
+  padding: 0; 
+  list-style: none; 
+}
+#container #content section article figure ul li { 
+  display: inline-block; 
+  margin: 0 25px 0 0; 
+}
+#container #content section article figure ul li.last { 
+  margin: 0; 
+}
+#container #content section article figure figcaption { 
+  display: block; 
+  width: 100%; 
+  margin-top: 20px; 
+  clear: both; 
+  text-align: center; 
+  text-transform: uppercase; 
+  font-weight: bold; 
+}
+
+/* Vizualisation */ 
+

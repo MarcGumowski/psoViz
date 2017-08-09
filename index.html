@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title> Chord Diagram </title>
+  <link rel="stylesheet" href="src/styles.css" type="text/css">
+</head>
+
+  <body>
+    <center>
+      <h1>Particle Swarm Optimization</h1>
+      <h2>Visualization</h2></center>
+  
+    <!-- Page -->
+    <div class="wrapper row">
+      <div id="container" class="clear">
+
+        <section id="graph" class="clear">
+          <figure><div id="psoViz"></div>
+            <figcaption>
+              <h2>Visualization of particles' behavior</h2>
+              <p></p>
+            </figcaption>
+          </figure>
+        </section>
+        <div id="content">
+          <section class="clear">
+            
+            <article class="contentBox">
+              <h2>Note</h2>
+              <p>A simple implementation of the 
+      particle swarm optimization algorithm (PSO).</p>
+              <p></p>
+            </article>
+            
+            <article class="contentBox lastBox">
+              <figure>
+            <ul>
+              <li><br></li>
+              <li class="last"></li>
+            </ul>
+              </figure>
+            </article>
+            
+          </section>
+          
+        </div>
+      </div>
+    </div>
+    
+  <!-- JS -->
+  <script src="src/d3v4/d3.min.js"></script>
+  <script src="src//d3-scale-chromatic.min.js"></script>
+  <script src="src/d3-contour.min.js"></script>
+  <script src="src/psoViz.js"></script>
+  
+  <script>
+  
+    // Define expression
+/*    function expr(x, y) {
+  return (1 + Math.pow(x + y + 1, 2) * (19 - 14 * x + 3 * x * x - 14 * y + 6 * x * x + 3 * y * y))
+      * (30 + Math.pow(2 * x - 3 * y, 2) * (18 - 32 * x + 12 * x * x + 48 * y - 36 * x * y + 27 * y * y));
+} */
+
+    function expr(x, y) { 
+        return Math.pow(x + 2 * y -7, 2) + Math.pow(2 * x + y - 5, 2);
+    }
+    
+    // Define options
+    var options = {
+      grid: { xMin: -10, xMax: 10, yMin: -10, yMax: 10 }
+    };
+    
+    // Call psoViz function
+    psoViz("#psoViz", expr, options);
+    
+  </script>
+
+
+  </body>
+</html>
