@@ -21,7 +21,7 @@ function psoViz(id, expr, options) {
     width: Math.min(630, window.innerWidth - 10),
     height: Math.min(480, window.innerHeight - 20),
     grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 2,  },
-    radius: 5,
+    radius: 3,
     number: 50,
     color: '#ce2525',
   };
