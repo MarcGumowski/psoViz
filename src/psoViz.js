@@ -18,9 +18,12 @@ function psoViz(id, expr, options) {
   
   var cfg = {
     margin: { top: 10, left: 10, right: 10, bottom: 10 },
-    width: Math.min(610, window.innerWidth - 10),
-    height: Math.min(460, window.innerHeight - 20),
-    grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 2,  }
+    width: Math.min(630, window.innerWidth - 10),
+    height: Math.min(480, window.innerHeight - 20),
+    grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 2,  },
+    radius: 5,
+    number: 50,
+    color: '#ce2525',
   };
   
   //Put all of the options into a variable called cfg
@@ -29,20 +32,29 @@ function psoViz(id, expr, options) {
 		if('undefined' !== typeof options[i]){ cfg[i] = options[i]; }
 	  }
 	}
+	
+	var scaleX = d3.scaleLinear()
+	  .domain([cfg.grid.xMin, cfg.grid.xMax])
+	  .range([0, cfg.width]);
+	  
+	var scaleY = d3.scaleLinear()
+	  .domain([cfg.grid.yMin, cfg.grid.yMax])
+	  .range([0, cfg.height]);  
+	
+	function randomize(min, max) {
+    return Math.random() * (max - min) + min;
+  }
 
   ////////////////////////////////////////////////////////
-  // SVG ang g ///////////////////////////////////////////
+  // SVG /////////////////////////////////////////////////
   ////////////////////////////////////////////////////////
   
 	d3.select(id).select("svg").remove();
 	
 	var svg = d3.select(id).append("svg")
 	    .attr('id', 'psoVizSVG')
-			.attr("width",  cfg.width + cfg.margin.left + cfg.margin.right)
-			.attr("height", cfg.height + cfg.margin.top + cfg.margin.bottom);
-	
-	var g = svg.append("g")
-			.attr("transform", "translate(" + (cfg.width / 2 + cfg.margin.left) + "," + (cfg.height / 2 + cfg.margin.top) + ")");
+			.attr("width",  cfg.width)
+			.attr("height", cfg.height);
 	  
   ////////////////////////////////////////////////////////
   // Contour /////////////////////////////////////////////
@@ -79,7 +91,23 @@ function psoViz(id, expr, options) {
   // Particles ///////////////////////////////////////////
   ////////////////////////////////////////////////////////
   
-  g;
+  var data = new Array(1 * cfg.number);
+  for (var l = 0; l < cfg.number; ++l) {
+    data[l] = {"value": cfg.radius, "color": cfg.color}; 
+  }
+  
+  var particle = svg.selectAll('.particle')
+      .data(data)
+      .enter().append("g");
+      
+  particle.append('circle')
+    .attr('class', 'particle')
+    .attr('r', function(d) { return d.value; })
+    .style('fill', function(d) { return d.color; })
+    .attr("transform", function(d) { 
+      return "translate(" + randomize(scaleX.range()[0], scaleX.range()[1])  + "," + 
+      randomize(scaleY.range()[0], scaleY.range()[1]) + ")"; 
+    });
   
   ////////////////////////////////////////////////////////
   // Simulation //////////////////////////////////////////
