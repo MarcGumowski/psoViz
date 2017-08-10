@@ -28,8 +28,8 @@ function psoViz(id, expr, options) {
   
   //Put all of the options into a variable called cfg
 	if('undefined' !== typeof options){
-	  for(var i in options){
-		if('undefined' !== typeof options[i]){ cfg[i] = options[i]; }
+	  for(var p in options){
+		if('undefined' !== typeof options[p]){ cfg[p] = options[p]; }
 	  }
 	}
 	
@@ -81,7 +81,7 @@ function psoViz(id, expr, options) {
       .domain(d3.extent(thresholds))
       .interpolate(function() { return d3.interpolateYlGnBu; });
   
-  svg.selectAll("path")
+  svg.append("g").selectAll("path")
     .data(contours(values))
     .enter().append("path")
       .attr("d", d3.geoPath(d3.geoIdentity().scale(cfg.width / n)))
@@ -99,19 +99,41 @@ function psoViz(id, expr, options) {
   var particle = svg.selectAll('.particle')
       .data(data)
       .enter().append("g");
-      
+  
+  // Create particle and initialize position   
   particle.append('circle')
     .attr('class', 'particle')
+    .attr('id', function(d,i) { return "particle" + i;})
     .attr('r', function(d) { return d.value; })
-    .style('fill', function(d) { return d.color; })
-    .attr("transform", function(d) { 
-      return "translate(" + randomize(scaleX.range()[0], scaleX.range()[1])  + "," + 
-      randomize(scaleY.range()[0], scaleY.range()[1]) + ")"; 
-    });
+    .attr('cx', function(d) { return randomize(scaleX.range()[0], scaleX.range()[1]); })
+    .attr('cy', function(d) { return randomize(scaleY.range()[0], scaleY.range()[1]); })
+    .on("click", function(d) { console.log(d); })
+    .style('fill', function(d) { return d.color; });
+    
+  // Initialize best known position: pbest
+  var pbest = expr([]); // Then append it to particle (cx,cy, f(x,y))
+  
+  // Initialize velocity
+  var v = []; // Then append it to particle vx, vy
+  
+  // Update global best: gbest
+  var gbest = []; // return x,y, f(x,y) //Particle ID
   
   ////////////////////////////////////////////////////////
   // Simulation //////////////////////////////////////////
   ////////////////////////////////////////////////////////
+    
+  // While Criteria
+  
+  // For each particle
+   // For each dimension
+   
+    // Update position -> transition(). force(). x, y, vx, vy
+  particle.selectAll('circle')
+    .transition()
+    .duration(1500) // vx * vy
+    .attr('cx', cfg.width / 2)
+    .attr('cy', cfg.height / 2);
  
   ////////////////////////////////////////////////////////
   // Legend and Buttons //////////////////////////////////
