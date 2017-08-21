@@ -124,17 +124,29 @@ function psoViz(id, expr, options) {
   ////////////////////////////////////////////////////////
     
   // While Criteria
+  // Do function Loop
+  // else STOP
   
+  // Function loop 
   // For each particle
    // For each dimension
-   
-    // Update position -> transition(). force(). x, y, vx, vy
-  particle.selectAll('circle')
-    .transition()
-    .duration(1500) // vx * vy
-    .attr('cx', cfg.width / 2)
-    .attr('cy', cfg.height / 2);
- 
+    // Update position
+    // store in array
+
+  var cxNew = cfg.width / 2,  
+      cyNew = cfg.height / 2;
+
+    particle.selectAll("circle")
+      .transition()
+      .duration(function(d) { return 2000 * randomize(1, 2)}) // d.vx * d.vy 
+      .on("start", function repeat() {
+        d3.active(this)
+          .attr('cx', function(d) { return cxNew *  randomize(0, 2); }) // d.cxNew
+          .attr('cy', function(d) { return cyNew *  randomize(0, 2); }) // d.cyNew
+          .transition()
+            .on("start", repeat);
+      });
+
   ////////////////////////////////////////////////////////
   // Legend and Buttons //////////////////////////////////
   ////////////////////////////////////////////////////////
