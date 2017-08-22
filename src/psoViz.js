@@ -91,33 +91,44 @@ function psoViz(id, expr, options) {
   // Particles ///////////////////////////////////////////
   ////////////////////////////////////////////////////////
   
+  // Initialize data with best known position pbest and velocity
   var data = new Array(1 * cfg.number);
   for (var l = 0; l < cfg.number; ++l) {
-    data[l] = {"value": cfg.radius, "color": cfg.color}; 
+    data[l] = {
+      "value": cfg.radius, 
+      "color": cfg.color,
+      "pbest": {
+        "x": randomize(scaleX.range()[0], scaleX.range()[1]), 
+        "y": randomize(scaleY.range()[0], scaleY.range()[1])
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      }
+    }; 
   }
+  
+  console.log(data);  
   
   var particle = svg.selectAll('.particle')
       .data(data)
       .enter().append("g");
+  
+  // Evaluate pbest
+  var pbestEval = expr([]);
+  
+  // Update global best: gbest
+  var gbest = []; // return x,y, f(x,y) //Particle ID, function that take the max eval of pbestEval and all infos.
   
   // Create particle and initialize position   
   particle.append('circle')
     .attr('class', 'particle')
     .attr('id', function(d,i) { return "particle" + i;})
     .attr('r', function(d) { return d.value; })
-    .attr('cx', function(d) { return randomize(scaleX.range()[0], scaleX.range()[1]); })
-    .attr('cy', function(d) { return randomize(scaleY.range()[0], scaleY.range()[1]); })
+    .attr('cx', function(d) { return d.pbest.x; })
+    .attr('cy', function(d) { return d.pbest.y; })
     .on("click", function(d) { console.log(d); })
     .style('fill', function(d) { return d.color; });
-    
-  // Initialize best known position: pbest
-  var pbest = expr([]); // Then append it to particle (cx,cy, f(x,y))
-  
-  // Initialize velocity
-  var v = []; // Then append it to particle vx, vy
-  
-  // Update global best: gbest
-  var gbest = []; // return x,y, f(x,y) //Particle ID
   
   ////////////////////////////////////////////////////////
   // Simulation //////////////////////////////////////////
