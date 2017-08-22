@@ -91,7 +91,7 @@ function psoViz(id, expr, options) {
   // Particles ///////////////////////////////////////////
   ////////////////////////////////////////////////////////
   
-  var data = new Array(1 * cfg.number);
+  var data = new Array(cfg.number);
   for (var l = 0; l < cfg.number; ++l) {
     data[l] = {"value": cfg.radius, "color": cfg.color}; 
   }
@@ -111,7 +111,12 @@ function psoViz(id, expr, options) {
     .style('fill', function(d) { return d.color; });
     
   // Initialize best known position: pbest
-  var pbest = expr([]); // Then append it to particle (cx,cy, f(x,y))
+  //var pbest = expr([]); // Then append it to particle (cx,cy, f(x,y))
+  var pbest = new Array(cfg.number);
+  d3.selectAll('.particle')._groups[0].forEach(function(d) {
+    pbest.push(d.getAttribute('cx'), d.getAttribute('cy'));
+  });
+  console.log(pbest);
   
   // Initialize velocity
   var v = []; // Then append it to particle vx, vy
