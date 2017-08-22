@@ -17,13 +17,14 @@ function psoViz(id, expr, options) {
   ////////////////////////////////////////////////////////
   
   var cfg = {
-    margin: { top: 10, left: 10, right: 10, bottom: 10 },
-    width: Math.min(630, window.innerWidth - 10),
+    margin: { top: 10, left: 5, right: 5, bottom: 10 },
+    width: Math.min(640, window.innerWidth - 10),
     height: Math.min(480, window.innerHeight - 20),
-    grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 2,  },
+    grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 2 },
     radius: 3,
     number: 50,
     color: '#ce2525',
+    colorBest: "#1b9e77"
   };
   
   //Put all of the options into a variable called cfg
@@ -44,6 +45,22 @@ function psoViz(id, expr, options) {
 	function randomize(min, max) {
     return Math.random() * (max - min) + min;
   }
+  
+  Array.prototype.getMin = function(attrib) {
+    return this.reduce(function(prev, curr){ 
+        return prev[attrib] < curr[attrib] ? prev : curr; 
+    });
+  };
+  
+  function getgbest(data) {
+    
+    var best = [];
+    best = data.getMin('pbestEval');
+    best.color = cfg.colorBest;
+    
+    console.log(best.color);
+    return best;
+  }
 
   ////////////////////////////////////////////////////////
   // SVG /////////////////////////////////////////////////
@@ -61,13 +78,15 @@ function psoViz(id, expr, options) {
   ////////////////////////////////////////////////////////
   
   // Create a grid of value
-  var n = 240, m = 240, values = new Array(n * m);
+ var n = 240, m = Math.round(240 * cfg.height / cfg.width), values = new Array(n * m);
   for (var j = 0.5, k = 0; j < m; ++j) {
     for (var i = 0.5; i < n; ++i, ++k) {
       values[k] = expr(cfg.grid.xMin + (cfg.grid.xMax - cfg.grid.xMin) * i / n, 
-      cfg.grid.yMax - (cfg.grid.yMax - cfg.grid.yMin) * j / m);
+                       cfg.grid.yMax - (cfg.grid.yMax - cfg.grid.yMin) * j / m);
     }
   }
+  
+
   
   // Plot
   var thresholds = d3.range(1, 21)
@@ -85,7 +104,9 @@ function psoViz(id, expr, options) {
     .data(contours(values))
     .enter().append("path")
       .attr("d", d3.geoPath(d3.geoIdentity().scale(cfg.width / n)))
-      .attr("fill", function(d) { return color(d.value); });
+      .attr("fill", function(d) { return color(d.value); })
+      .style("stroke", "#fff")
+      .style("stroke-width", 0.5);
       
   ////////////////////////////////////////////////////////
   // Particles ///////////////////////////////////////////
@@ -112,12 +133,16 @@ function psoViz(id, expr, options) {
   // Evaluate pbest
   var pbestEval = [];
   data.forEach(function(d) { d.pbestEval = expr(d.pbest.x, d.pbest.y); });
-
-  console.log(data);
   
   // Update global best: gbest
-  var gbest = []; // return x,y, f(x,y) //Particle ID, function that selects data array with min pbestEval, give different color to it
+  var gbest = getgbest(data); 
   
+  console.log(data);
+  console.log(gbest);
+  console.log(expr(0,-1));
+  console.log(scaleX(0));
+  console.log(scaleY(-1));
+    
   // Create particle and initialize position with appropriate scale
   var particle = svg.selectAll('.particle')
       .data(data)
@@ -127,7 +152,7 @@ function psoViz(id, expr, options) {
       .attr('id', function(d,i) { return "particle" + i;})
       .attr('r', function(d) { return d.value; })
       .attr('cx', function(d) { return scaleX(d.pbest.x); })
-      .attr('cy', function(d) { return scaleY(d.pbest.y); })
+      .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
       .on("click", function(d) { console.log(d); })
       .style('fill', function(d) { return d.color; });
   
@@ -143,14 +168,14 @@ function psoViz(id, expr, options) {
   // For each particle
    // For each dimension
     // Update position
-    // store in array
+    // Evaluate pbest
+    // reinitialize color everyone same color cfg.color
+    // Update gbest -> getgbest
 
   var cxNew = cfg.width / 2,  
       cyNew = cfg.height / 2;
 
-  for (var z = 0; z < 20; z++) {
-    
-    console.log(z);
+/*  for (var z = 0; z < 0; z++) {
     
     particle = particle
       .transition()
@@ -159,7 +184,7 @@ function psoViz(id, expr, options) {
       .attr('cy', function(d) { return cyNew *  randomize(0, 2); }) // d.cyNew
       .style('fill', function(d) { return d.color; });
     
-  }
+  } */
 
 
 /*    particle.selectAll("circle")
