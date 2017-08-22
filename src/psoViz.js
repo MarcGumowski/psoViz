@@ -91,12 +91,8 @@ function psoViz(id, expr, options) {
   // Particles ///////////////////////////////////////////
   ////////////////////////////////////////////////////////
   
-<<<<<<< HEAD
-  var data = new Array(cfg.number);
-=======
   // Initialize data with best known position pbest and velocity
   var data = new Array(1 * cfg.number);
->>>>>>> 9c4311e7c0935eada2d04b15e8b5e8d0207e8263
   for (var l = 0; l < cfg.number; ++l) {
     data[l] = {
       "value": cfg.radius, 
@@ -133,23 +129,6 @@ function psoViz(id, expr, options) {
     .attr('cy', function(d) { return d.pbest.y; })
     .on("click", function(d) { console.log(d); })
     .style('fill', function(d) { return d.color; });
-<<<<<<< HEAD
-    
-  // Initialize best known position: pbest
-  //var pbest = expr([]); // Then append it to particle (cx,cy, f(x,y))
-  var pbest = new Array(cfg.number);
-  d3.selectAll('.particle')._groups[0].forEach(function(d) {
-    pbest.push(d.getAttribute('cx'), d.getAttribute('cy'));
-  });
-  console.log(pbest);
-  
-  // Initialize velocity
-  var v = []; // Then append it to particle vx, vy
-  
-  // Update global best: gbest
-  var gbest = []; // return x,y, f(x,y) //Particle ID
-=======
->>>>>>> 9c4311e7c0935eada2d04b15e8b5e8d0207e8263
   
   ////////////////////////////////////////////////////////
   // Simulation //////////////////////////////////////////
