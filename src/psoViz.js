@@ -112,25 +112,24 @@ function psoViz(id, expr, options) {
   // Evaluate pbest
   var pbestEval = [];
   data.forEach(function(d) { d.pbestEval = expr(d.pbest.x, d.pbest.y); });
-  
+
   console.log(data);
   
   // Update global best: gbest
-  var gbest = []; // return x,y, f(x,y) //Particle ID, function that take the max eval of pbestEval and all infos.
+  var gbest = []; // return x,y, f(x,y) //Particle ID, function that selects data array with min pbestEval, give different color to it
   
   // Create particle and initialize position with appropriate scale
   var particle = svg.selectAll('.particle')
       .data(data)
-      .enter().append("g");
-    
-  particle.append('circle')
-    .attr('class', 'particle')
-    .attr('id', function(d,i) { return "particle" + i;})
-    .attr('r', function(d) { return d.value; })
-    .attr('cx', function(d) { return scaleX(d.pbest.x); })
-    .attr('cy', function(d) { return scaleY(d.pbest.y); })
-    .on("click", function(d) { console.log(d); })
-    .style('fill', function(d) { return d.color; });
+      .enter().append("g")
+      .append('circle')
+      .attr('class', 'particle')
+      .attr('id', function(d,i) { return "particle" + i;})
+      .attr('r', function(d) { return d.value; })
+      .attr('cx', function(d) { return scaleX(d.pbest.x); })
+      .attr('cy', function(d) { return scaleY(d.pbest.y); })
+      .on("click", function(d) { console.log(d); })
+      .style('fill', function(d) { return d.color; });
   
   ////////////////////////////////////////////////////////
   // Simulation //////////////////////////////////////////
@@ -149,7 +148,21 @@ function psoViz(id, expr, options) {
   var cxNew = cfg.width / 2,  
       cyNew = cfg.height / 2;
 
-    particle.selectAll("circle")
+  for (var z = 0; z < 20; z++) {
+    
+    console.log(z);
+    
+    particle = particle
+      .transition()
+      .duration(500)
+      .attr('cx', function(d) { return cxNew *  randomize(0, 2); }) // d.cxNew
+      .attr('cy', function(d) { return cyNew *  randomize(0, 2); }) // d.cyNew
+      .style('fill', function(d) { return d.color; });
+    
+  }
+
+
+/*    particle.selectAll("circle")
       .transition()
       .duration(function(d) { return 2000 * randomize(1, 2)}) // d.vx * d.vy 
       .on("start", function repeat() {
@@ -158,7 +171,8 @@ function psoViz(id, expr, options) {
           .attr('cy', function(d) { return cyNew *  randomize(0, 2); }) // d.cyNew
           .transition()
             .on("start", repeat);
-      });
+      });*/ // Random moves
+
 
   ////////////////////////////////////////////////////////
   // Legend and Buttons //////////////////////////////////
