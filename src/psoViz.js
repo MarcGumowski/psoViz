@@ -98,9 +98,10 @@ function psoViz(id, expr, options) {
       "value": cfg.radius, 
       "color": cfg.color,
       "pbest": {
-        "x": randomize(scaleX.range()[0], scaleX.range()[1]), 
-        "y": randomize(scaleY.range()[0], scaleY.range()[1])
+        "x": randomize(scaleX.domain()[0], scaleX.domain()[1]), 
+        "y": randomize(scaleY.domain()[0], scaleY.domain()[1])
       },
+      "pbestEval": [],
       "velocity": {
         "x": 0,
         "y": 0
@@ -108,25 +109,26 @@ function psoViz(id, expr, options) {
     }; 
   }
   
-  console.log(data);  
-  
-  var particle = svg.selectAll('.particle')
-      .data(data)
-      .enter().append("g");
-  
   // Evaluate pbest
-  var pbestEval = expr([]);
+  var pbestEval = [];
+  data.forEach(function(d) { d.pbestEval = expr(d.pbest.x, d.pbest.y); });
+  
+  console.log(data);
   
   // Update global best: gbest
   var gbest = []; // return x,y, f(x,y) //Particle ID, function that take the max eval of pbestEval and all infos.
   
-  // Create particle and initialize position   
+  // Create particle and initialize position with appropriate scale
+  var particle = svg.selectAll('.particle')
+      .data(data)
+      .enter().append("g");
+    
   particle.append('circle')
     .attr('class', 'particle')
     .attr('id', function(d,i) { return "particle" + i;})
     .attr('r', function(d) { return d.value; })
-    .attr('cx', function(d) { return d.pbest.x; })
-    .attr('cy', function(d) { return d.pbest.y; })
+    .attr('cx', function(d) { return scaleX(d.pbest.x); })
+    .attr('cy', function(d) { return scaleY(d.pbest.y); })
     .on("click", function(d) { console.log(d); })
     .style('fill', function(d) { return d.color; });
   
