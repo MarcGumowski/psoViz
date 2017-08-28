@@ -20,10 +20,16 @@ function psoViz(id, expr, options) {
     width: Math.min(640, window.innerWidth - 10),
     height: Math.min(480, window.innerHeight - 20),
     grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 2 },
+    // Vizualization parameters
     radius: 3,
-    number: 50,
     color: '#ce2525',
-    colorBest: "#1b9e77"
+    colorBest: "#1b9e77",
+    // Algorithm parameters
+    iteration: 50,
+    number: 50,
+    w: 0.72984,
+    c1: 2.05 * 0.72984,
+    c2: 2.05 * 0.72984
   };
   
   //Put all of the options into a variable called cfg
@@ -115,17 +121,24 @@ function psoViz(id, expr, options) {
     data[l] = {
       "value": cfg.radius, 
       "color": cfg.color,
-      "pbest": {
-        "x": randomize(scaleX.domain()[0], scaleX.domain()[1]), 
+      "position": {
+        "x": randomize(scaleX.domain()[0], scaleX.domain()[1]),
         "y": randomize(scaleY.domain()[0], scaleY.domain()[1])
       },
-      "pbestEval": [],
       "velocity": {
         "x": 0,
         "y": 0
-      }
+      },      
+      "pbest": {
+        "x": [], 
+        "y": []
+      },
+      "pbestEval": []
     }; 
   }
+  
+  // Set pbest as initial position
+  data.forEach(function(d) { d.pbest = d.position; });
   
   // Evaluate pbest
   var pbestEval = [];
@@ -133,9 +146,6 @@ function psoViz(id, expr, options) {
   
   // Update global best: gbest
   var gbest = getgbest(data); 
-  
-  console.log(data);
-  console.log(gbest);
     
   // Create particle and initialize position with appropriate scale
   var particle = svg.selectAll('.particle')
@@ -156,10 +166,10 @@ function psoViz(id, expr, options) {
     
   // While Criteria
   var it = 0;
-  while (it < 10) {
+  while (it < cfg.iteration) {
     
+    // Loop
     psoVizLoop(data, cfg);
-    
     // Update viz
     particle = particle
           .transition()
@@ -167,52 +177,50 @@ function psoViz(id, expr, options) {
           .attr('cx', function(d) { return scaleX(d.pbest.x); })
           .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
           .style('fill', function(d) { return d.color; });
-    
     ++it;
     
   }
-  // Do function Loop
-  // else STOP
   
-  // Function loop (data, cfg)
+  // Function loop (Code can be improved with vector algebra)
   function psoVizLoop(data, cfg) {
-    
-    for (var index = 0; index < cfg.number; ++index) {
         
-        // Update velocity
+        // Update velocity 
+        data.forEach(function(d) {
+          d.velocity.x = cfg.w * d.velocity.x + cfg.c1 * Math.random() * (d.pbest.x - d.position.x) + 
+                       cfg.c2 * Math.random() * (gbest.position.x - d.position.x);
+          d.velocity.y = cfg.w * d.velocity.y + cfg.c1 * Math.random() * (d.pbest.y - d.position.y) + 
+                       cfg.c2 * Math.random() * (gbest.position.y - d.position.y);
+        });
         
         // Clamp velocity
+        data.forEach(function(d) {
+          
+          var violation = d.velocity.x < cfg.grid.xMin ? 1 : 0;
+          d.velocity.x = (1 - violation) * d.velocity.x + violation * cfg.grid.xMin;
+          violation = d.velocity.y < cfg.grid.yMin ? 1 : 0;
+          d.velocity.y = (1 - violation) * d.velocity.y + violation * cfg.grid.yMin;
+          
+          violation = d.velocity.x > cfg.grid.xMax ? 1 : 0;
+          d.velocity.x = (1 - violation) * d.velocity.x + violation * cfg.grid.xMax;
+          violation = d.velocity.y < cfg.grid.yMin ? 1 : 0;
+          d.velocity.y = (1 - violation) * d.velocity.y + violation * cfg.grid.yMax;
+          
+        });
         
         // Update Position var x = []; (x = pbest.x + velocity.x)
         
         // Evaluate new pbest
         
-        // reinitialize color everyone same color cfg.color
+        // reinitialize color everyone same color cfg.color transition
         
         // Update pbestNew if Eval < pbestOldEval 
         
         // Update gbest -> getgbest
-
-        //console.log(data[index].pbest.x);
-        //console.log(data[index].pbest.y);
         
-        data[index].pbest.x = randomize(scaleX.domain()[0], scaleX.domain()[1]);
-        data[index].pbest.y = randomize(scaleY.domain()[0], scaleY.domain()[1]);
-        
-    }
   }
-
-/*    particle.selectAll("circle")
-      .transition()
-      .duration(function(d) { return 2000 * randomize(1, 2)}) // d.vx * d.vy 
-      .on("start", function repeat() {
-        d3.active(this)
-          .attr('cx', function(d) { return cxNew *  randomize(0, 2); }) // d.cxNew
-          .attr('cy', function(d) { return cyNew *  randomize(0, 2); }) // d.cyNew
-          .transition()
-            .on("start", repeat);
-      });*/ // Random moves
-
+  
+  console.log(data);
+  console.log(gbest);
 
   ////////////////////////////////////////////////////////
   // Legend and Buttons //////////////////////////////////
