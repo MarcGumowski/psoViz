@@ -87,7 +87,6 @@ function psoViz(id, expr, options) {
   }
   
 
-  
   // Plot
   var thresholds = d3.range(1, 21)
       .map(function(p) { return Math.pow(2, p); });
