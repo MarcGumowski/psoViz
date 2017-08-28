@@ -5,8 +5,7 @@
 // Author : Marc Gumowski
 //
 // Description : Function allowing to visualize a simple implementation of the  particle 
-//               swarm optimization algorithm (PSO), using a physical simulation of charged 
-//               particles.
+//               swarm optimization algorithm (PSO).
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
