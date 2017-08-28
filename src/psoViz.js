@@ -5,8 +5,7 @@
 // Author : Marc Gumowski
 //
 // Description : Function allowing to visualize a simple implementation of the  particle 
-//               swarm optimization algorithm (PSO), using a physical simulation of charged 
-//               particles.
+//               swarm optimization algorithm (PSO).
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -58,7 +57,6 @@ function psoViz(id, expr, options) {
     best = data.getMin('pbestEval');
     best.color = cfg.colorBest;
     
-    console.log(best.color);
     return best;
   }
 
@@ -138,9 +136,6 @@ function psoViz(id, expr, options) {
   
   console.log(data);
   console.log(gbest);
-  console.log(expr(0,-1));
-  console.log(scaleX(0));
-  console.log(scaleY(-1));
     
   // Create particle and initialize position with appropriate scale
   var particle = svg.selectAll('.particle')
@@ -160,31 +155,52 @@ function psoViz(id, expr, options) {
   ////////////////////////////////////////////////////////
     
   // While Criteria
+  var it = 0;
+  while (it < 10) {
+    
+    psoVizLoop(data, cfg);
+    
+    // Update viz
+    particle = particle
+          .transition()
+          .duration(1000)
+          .attr('cx', function(d) { return scaleX(d.pbest.x); })
+          .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
+          .style('fill', function(d) { return d.color; });
+    
+    ++it;
+    
+  }
   // Do function Loop
   // else STOP
   
-  // Function loop 
-  // For each particle
-   // For each dimension
-    // Update position
-    // Evaluate pbest
-    // reinitialize color everyone same color cfg.color
-    // Update gbest -> getgbest
-
-  var cxNew = cfg.width / 2,  
-      cyNew = cfg.height / 2;
-
-/*  for (var z = 0; z < 0; z++) {
+  // Function loop (data, cfg)
+  function psoVizLoop(data, cfg) {
     
-    particle = particle
-      .transition()
-      .duration(500)
-      .attr('cx', function(d) { return cxNew *  randomize(0, 2); }) // d.cxNew
-      .attr('cy', function(d) { return cyNew *  randomize(0, 2); }) // d.cyNew
-      .style('fill', function(d) { return d.color; });
-    
-  } */
+    for (var index = 0; index < cfg.number; ++index) {
+        
+        // Update velocity
+        
+        // Clamp velocity
+        
+        // Update Position var x = []; (x = pbest.x + velocity.x)
+        
+        // Evaluate new pbest
+        
+        // reinitialize color everyone same color cfg.color
+        
+        // Update pbestNew if Eval < pbestOldEval 
+        
+        // Update gbest -> getgbest
 
+        //console.log(data[index].pbest.x);
+        //console.log(data[index].pbest.y);
+        
+        data[index].pbest.x = randomize(scaleX.domain()[0], scaleX.domain()[1]);
+        data[index].pbest.y = randomize(scaleY.domain()[0], scaleY.domain()[1]);
+        
+    }
+  }
 
 /*    particle.selectAll("circle")
       .transition()
