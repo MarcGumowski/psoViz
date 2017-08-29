@@ -18,8 +18,21 @@
         <section id="graph" class="clear">
           <figure><div id="psoViz"></div>
             <figcaption>
-              <h2>Visualization of particles' behavior</h2>
-              <p></p>
+              <h2>Parameters</h2>
+                <h3>Expression:</h3>
+                f(x,y) = 
+                <h3>Search space:</h3>
+                x = [], y = []
+                <h3>Optimization parameters:</h3> 
+                 Number of iterations <br>
+                 &omega; <br>
+                 &phi;<sub>p</sub> <br>
+                 &phi;<sub>g</sub> 
+                <h3>Aesthetical options:</h3> 
+                color <br>
+                radius <br>
+                <h3>Start Button</h3>
+                <h3>Dynamic Results : pbest.x, pbest.y, pbestEval</h3>
             </figcaption>
           </figure>
         </section>
@@ -28,19 +41,13 @@
           <section class="clear">
             
             <article class="contentBox">
-              <h2>Note</h2>
-              <p>A simple implementation of the 
-      particle swarm optimization algorithm (PSO).</p>
-              <p></p>
+              <h3>Note</h3>
+              <p><font color="#3299BB">&omega;</font>, <font color="#3299BB">&phi;<sub>p</sub></font> and <font color="#3299BB">&phi;<sub>g</sub></font> control the behaviour and efficacy of the PSO method. They can have a large impact on the optimization performance. Choose them precautiously.</p>
             </article>
             
             <article class="contentBox lastBox">
-              <figure>
-            <ul>
-              <li><br></li>
-              <li class="last"></li>
-            </ul>
-              </figure>
+              <h3></h3>
+              <p><br><br> To update the expression, please use basic javascript language. For instance, <font color="#3299BB">x&sup2;</font> is written <font color="#3299BB">Math</font>.<font color="#FF9900">pow</font>(x, 2), <font color="#3299BB">&#8730;<span style="text-decoration: overline">x</span></font> is written <font color="#3299BB">Math</font>.<font color="#FF9900">sqrt</font>(x), etc. </p>
             </article>
             
           </section> 
@@ -69,7 +76,9 @@
     
     // Define options
     var options = {
-      grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 1 }
+      grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 1 },
+      iteration: 100,
+      radius: 4,
     };
     
     // Call psoViz function

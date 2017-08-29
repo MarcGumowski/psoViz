@@ -17,12 +17,12 @@ function psoViz(id, expr, options) {
   
   var cfg = {
     margin: { top: 10, left: 5, right: 5, bottom: 10 },
-    width: Math.min(640, window.innerWidth - 10),
-    height: Math.min(480, window.innerHeight - 20),
+    width: Math.min(760, window.innerWidth - 10),
+    height: Math.min(570, window.innerHeight - 20),
     grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 2 },
     // Vizualization parameters
     radius: 3,
-    color: '#ce2525',
+    color: 'ff6600',
     colorBest: "#1b9e77",
     // Algorithm parameters
     iteration: 50,
@@ -148,7 +148,10 @@ function psoViz(id, expr, options) {
   var gbest = getgbest(data); 
     
   // Create particle and initialize position with appropriate scale
-  var particle = svg.selectAll('.particle')
+  var particles = svg.append('g')
+      .style("filter", "url(#gooey)");
+      
+  var particle = particles.selectAll('.particle')
       .data(data)
       .enter().append("g")
       .append('circle')
@@ -173,7 +176,7 @@ function psoViz(id, expr, options) {
     // Update viz
     particle = particle
           .transition()
-          .duration(1000)
+          .duration(function(d) { return Math.sqrt(Math.pow(scaleX(d.velocity.x),2) + Math.pow(scaleY(d.velocity.y), 2)); })
           .attr('cx', function(d) { return scaleX(d.pbest.x); })
           .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
           .style('fill', function(d) { return d.color; });
@@ -181,7 +184,7 @@ function psoViz(id, expr, options) {
     
   }
   
-  // Function loop (Code can be improved with vector algebra)
+  // Function loop (Code can be improved with vector algebra ?)
   function psoVizLoop(data, cfg) {
         
         // Update velocity 
@@ -208,15 +211,29 @@ function psoViz(id, expr, options) {
         });
         
         // Update Position var x = []; (x = pbest.x + velocity.x)
+        data.forEach(function(d) {
+          d.position.x = d.position.x + d.velocity.x;
+          d.position.y = d.position.y + d.velocity.y;
+        });
         
-        // Evaluate new pbest
+        // Update pbest
+        data.forEach(function(d) {
+          d.pbest.x = expr(d.position.x, d.position.y) < d.pbestEval ? d.position.x : d.pbest.x;
+          d.pbest.y = expr(d.position.x, d.position.y) < d.pbestEval ? d.position.y : d.pbest.y;
+        });
         
-        // reinitialize color everyone same color cfg.color transition
-        
-        // Update pbestNew if Eval < pbestOldEval 
+        // Update pbestEval
+        data.forEach(function(d) { 
+          d.pbestEval = expr(d.position.x, d.position.y);
+        });
+      
+        // Reinitialize color
+        data.forEach(function(d) {
+          d.color = cfg.color;
+        });
         
         // Update gbest -> getgbest
-        
+        gbest = getgbest(data);
   }
   
   console.log(data);
@@ -225,6 +242,25 @@ function psoViz(id, expr, options) {
   ////////////////////////////////////////////////////////
   // Legend and Buttons //////////////////////////////////
   ////////////////////////////////////////////////////////
+  
+  //SVG filter for the gooey effect
+  //Code taken from http://tympanus.net/codrops/2015/03/10/creative-gooey-effects/
+  var defs = particles.append('defs');
+  var filter = defs.append('filter').attr('id','gooey');
+  filter.append('feGaussianBlur')
+  	.attr('in','SourceGraphic')
+  	.attr('stdDeviation','1.5')
+  	.attr('result','blur');
+  filter.append('feColorMatrix')
+  	.attr('in','blur')
+  	.attr('mode','matrix')
+  	.attr('values','1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7')
+  	.attr('result','gooey');
+  filter.append('feComposite')
+  	.attr('in','SourceGraphic')
+  	.attr('in2','goo')
+  	.attr('operator','atop');	  
+  
 }
 
 

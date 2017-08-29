@@ -52,7 +52,7 @@ wrapper {
 
 #header, #container {
   display: block; 
-  width: 960px; 
+  width: 1120px; 
   margin: 0 auto;
 }
 
@@ -106,14 +106,14 @@ h2 {
 }
 #container #graph figure div { 
   float: right; 
-  width: 630px; 
-  height: 480px; 
+  width: 760px; 
+  height: 570px; 
 }
 #container #graph figure figcaption { 
   display: block; 
   float: left; 
-  width: 290px; 
-  height: 440px; 
+  width: 320px; 
+  height: 530px; 
   padding: 20px;
   overflow: hidden; 
   color: #BCBCBC; 
