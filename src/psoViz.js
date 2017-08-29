@@ -162,10 +162,14 @@ function psoViz(id, expr, options) {
       .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
       .on("click", function(d) { console.log(d); })
       .style('fill', function(d) { return d.color; });
+      
+  // Add Mouseover tooltip and bigger transition().2*cfg.radius      
   
   ////////////////////////////////////////////////////////
   // Simulation //////////////////////////////////////////
   ////////////////////////////////////////////////////////
+    
+  // Add BUTTON to start simulation  
     
   // While Criteria
   var it = 0;
