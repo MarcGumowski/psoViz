@@ -161,31 +161,44 @@ function psoViz(id, expr, options) {
       .attr('cx', function(d) { return scaleX(d.pbest.x); })
       .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
       .on("click", function(d) { console.log(d); })
-      .style('fill', function(d) { return d.color; });
+      .style('fill', function(d) { return d.color; })
+      .on('mouseover', function(d) {
+        d3.select(this).transition("mouse")
+          .duration(0)
+          .attr('r', 4 * cfg.radius);
+      })
+      .on('mouseout', function(d) {
+        d3.select(this).transition("mouse")
+          .duration(500)
+          .attr('r', cfg.radius);
+      });
       
-  // Add Mouseover tooltip and bigger transition().2*cfg.radius      
+  // Add Mouseover tooltip d.pbest.x, d.pbest.y, eval(x,y)
   
   ////////////////////////////////////////////////////////
   // Simulation //////////////////////////////////////////
   ////////////////////////////////////////////////////////
     
   // Add BUTTON to start simulation  
-    
-  // While Criteria
-  var it = 0;
-  while (it < cfg.iteration) {
-    
-    // Loop
-    psoVizLoop(data, cfg);
-    // Update viz
-    particle = particle
-          .transition()
-          .duration(function(d) { return Math.sqrt(Math.pow(scaleX(d.velocity.x),2) + Math.pow(scaleY(d.velocity.y), 2)); })
-          .attr('cx', function(d) { return scaleX(d.pbest.x); })
-          .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
-          .style('fill', function(d) { return d.color; });
-    ++it;
-    
+  psoVizAlgo();
+  
+  function psoVizAlgo() { 
+    // While Criteria
+    var it = 0;
+    while (it < cfg.iteration) {
+      
+      // Loop
+      psoVizLoop(data, cfg);
+      // Update viz
+      particle = particle
+            .transition()
+            .duration(function(d) { return Math.sqrt(Math.pow(scaleX(d.velocity.x),2) + Math.pow(scaleY(d.velocity.y), 2)); })
+            .attr('cx', function(d) { return scaleX(d.pbest.x); })
+            .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
+            .style('fill', function(d) { return d.color; });
+      ++it;
+      
+    }
   }
   
   // Function loop (Code can be improved with vector algebra ?)
