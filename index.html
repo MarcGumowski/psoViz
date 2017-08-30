@@ -19,20 +19,22 @@
           <figure><div id="psoViz"></div>
             <figcaption>
               <h2>Parameters</h2>
-                <h3>Expression:</h3>
+                <h3>Expression</h3>
                 f(x,y) = 
-                <h3>Search space:</h3>
-                x = [], y = []
-                <h3>Optimization parameters:</h3> 
+                <h3>Search space</h3>
+                x &#8712; [], y &#8712; []
+                <h3>Optimization parameters</h3> 
                  Number of iterations <br>
                  &omega; <br>
                  &phi;<sub>p</sub> <br>
                  &phi;<sub>g</sub> 
-                <h3>Aesthetical options:</h3> 
-                color <br>
-                radius <br>
-                <h3>Refresh Button & Start Button</h3>
-                <h3>Dynamic Results : pbest.x, pbest.y, pbestEval</h3>
+                <h3>Simulation</h3>
+                 <button class="myButton" type="button" id="refresh">Refresh</button> 
+                 <button class="myButton" type="button" id="start">Start</button>
+                 <h3>Results</h3>
+                   <span id = "psoVizResultsX"></span><br>
+                   <span id = "psoVizResultsY"></span><br>
+                   <span id = "psoVizResultsF"></span>
             </figcaption>
           </figure>
         </section>
@@ -42,12 +44,10 @@
             
             <article class="contentBox">
               <h3>Note</h3>
-              <p><font color="#3299BB">&omega;</font>, <font color="#3299BB">&phi;<sub>p</sub></font> and <font color="#3299BB">&phi;<sub>g</sub></font> control the behaviour and efficacy of the PSO method. They can have a large impact on the optimization performance. Choose them precautiously.</p>
-            </article>
-            
-            <article class="contentBox lastBox">
-              <h3></h3>
-              <p><br><br> To update the expression, please use basic javascript language. For instance, <font color="#3299BB">x&sup2;</font> is written <font color="#3299BB">Math</font>.<font color="#FF9900">pow</font>(x, 2), <font color="#3299BB">&#8730;<span style="text-decoration: overline">x</span></font> is written <font color="#3299BB">Math</font>.<font color="#FF9900">sqrt</font>(x), etc. </p>
+              <p><font color="#3299BB">&omega;</font>, <font color="#3299BB">&phi;<sub>p</sub></font> and <font color="#3299BB">&phi;<sub>g</sub></font> control the behaviour and efficacy of the PSO method. <br>
+              They can have a large impact on the optimization performance. Choose them precautiously.</p>
+             <p>To update the expression, please use basic javascript language. <br>
+              For instance, <font color="#3299BB">x&sup2;</font> is written <font color="#3299BB">Math</font>.<font color="#FF9900">pow</font>(x, 2), <font color="#3299BB">&#8730;<span style="text-decoration: overline">x</span></font> is written <font color="#3299BB">Math</font>.<font color="#FF9900">sqrt</font>(x), etc.</p> 
             </article>
             
           </section> 
@@ -77,7 +77,7 @@
     // Define options
     var options = {
       grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 1 },
-      iteration: 100,
+      iteration: 10,
       radius: 4,
     };
     
@@ -85,7 +85,13 @@
     psoViz("#psoViz", expr, options);
     
     // Add button that call psoViz to refresh
-    
+    d3.select('#refresh')
+      .on('click', function(d) {
+	      d3.select('#psoViz').select("svg").remove();
+	      d3.select('#psoViz').select(".tooltip").remove();
+	      d3.select('#psoViz').select(".tooltipBest").remove();
+        psoViz("#psoViz", expr, options);
+      });
   </script>
 
   </body>
