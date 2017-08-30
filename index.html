@@ -25,7 +25,7 @@
                 x &#8712; [], y &#8712; []
                 <h3>Optimization parameters</h3> 
                  Number of iterations <br>
-                 &omega; <br>
+                 &omega; <form></form> <br>
                  &phi;<sub>p</sub> <br>
                  &phi;<sub>g</sub> 
                 <h3>Simulation</h3>
@@ -78,7 +78,10 @@
     var options = {
       grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 1 },
       iteration: 100,
-      radius: 4,
+      number: 50,
+      w: 0.72984,
+      c1: 2.05 * 0.72984,
+      c2: 2.05 * 0.72984
     };
     
     // Call psoViz function

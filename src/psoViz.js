@@ -24,7 +24,7 @@ function psoViz(id, expr, options) {
     color: 'ff6600',
     colorBest: "#1b9e77",
     // Algorithm parameters
-    iteration: 50,
+    iteration: 100,
     number: 50,
     w: 0.72984,
     c1: 2.05 * 0.72984,
@@ -141,7 +141,10 @@ function psoViz(id, expr, options) {
   }
   
   // Set pbest as initial position
-  data.forEach(function(d) { d.pbest = d.position; });
+  data.forEach(function(d) { 
+    d.pbest.x = d.position.x;
+    d.pbest.y = d.position.y;
+  });
   
   // Evaluate pbest
   var pbestEval = [];
@@ -161,28 +164,32 @@ function psoViz(id, expr, options) {
       .attr('class', 'particle')
       .attr('id', function(d,i) { return "particle" + i;})
       .attr('r', function(d) { return d.value; })
-      .attr('cx', function(d) { return scaleX(d.pbest.x); })
-      .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
+      .attr('cx', function(d) { return scaleX(d.position.x); })
+      .attr('cy', function(d) { return cfg.height - scaleY(d.position.y); })
       .on("click", function(d) { console.log(d); })
       .style('fill', function(d) { return d.color; })
       .on('mouseover', function(d) {
         
         d3.select(this).transition("mouse")
-          .duration(0)
+          .duration(250)
           .attr('r', 4 * cfg.radius);
+          
+        console.log(scaleX.invert(d3.select(this).attr("cx")));  
           
         tip.transition("mouse")        
           .duration(0)      
           .style('opacity', 1);
-        tip.html('<b><font size = "3">x = </font></b>' + d.pbest.x + ', ' + 
-                 '<b><font size = "3">y = </font></b>' + d.pbest.y + ', ' + 
-                 '<b><font size = "3">f(x,y) = </font></b>' + d.pbestEval);
+        tip.html('<b><font size = "3">x = </font></b>' + scaleX.invert(d3.select(this).attr("cx")) + ', ' + 
+                 '<b><font size = "3">y = </font></b>' + scaleY.invert(cfg.height - d3.select(this).attr("cy")) + ', ' + 
+                 '<b><font size = "3">f(x,y) = </font></b>' + expr(scaleX.invert(d3.select(this).attr("cx")), 
+                 scaleY.invert(cfg.height - d3.select(this).attr("cy"))));
       })
       .on('mousemove', function(d) {
 
-        tip.html('<b><font size = "3">x = </font></b>' + d.pbest.x + ', ' + 
-                 '<b><font size = "3">y = </font></b>' + d.pbest.y + ', ' + 
-                 '<b><font size = "3">f(x,y) = </font></b>' + d.pbestEval);
+        tip.html('<b><font size = "3">x = </font></b>' + scaleX.invert(d3.select(this).attr("cx")) + ', ' + 
+                 '<b><font size = "3">y = </font></b>' + scaleY.invert(cfg.height - d3.select(this).attr("cy")) + ', ' + 
+                 '<b><font size = "3">f(x,y) = </font></b>' + expr(scaleX.invert(d3.select(this).attr("cx")), 
+                 scaleY.invert(cfg.height - d3.select(this).attr("cy"))));
       })
       .on('mouseout', function(d) {
         
@@ -295,7 +302,6 @@ function psoViz(id, expr, options) {
         // Update gbest -> getgbest
         gbest = getgbest(data);
         console.log(gbest.pbestEval);
-        console.log(gbest);
   }
 
 
