@@ -16,7 +16,6 @@ function psoViz(id, expr, options) {
   ////////////////////////////////////////////////////////
   
   var cfg = {
-    margin: { top: 10, left: 5, right: 5, bottom: 10 },
     width: Math.min(760, window.innerWidth - 10),
     height: Math.min(570, window.innerHeight - 20),
     grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 2 },
@@ -39,14 +38,6 @@ function psoViz(id, expr, options) {
 	  }
 	}
 	
-	var scaleX = d3.scaleLinear()
-	  .domain([cfg.grid.xMin, cfg.grid.xMax])
-	  .range([0, cfg.width]);
-	  
-	var scaleY = d3.scaleLinear()
-	  .domain([cfg.grid.yMin, cfg.grid.yMax])
-	  .range([0, cfg.height]);  
-	
 	function randomize(min, max) {
     return Math.random() * (max - min) + min;
   }
@@ -58,24 +49,36 @@ function psoViz(id, expr, options) {
   };
   
   function getgbest(data) {
-    
-    var best = [];
     best = data.getMin('pbestEval');
     best.color = cfg.colorBest;
-    
     return best;
-  }
+  }	
 
   ////////////////////////////////////////////////////////
   // SVG /////////////////////////////////////////////////
   ////////////////////////////////////////////////////////
-  
-	d3.select(id).select("svg").remove();
 	
 	var svg = d3.select(id).append("svg")
 	    .attr('id', 'psoVizSVG')
 			.attr("width",  cfg.width)
 			.attr("height", cfg.height);
+			
+	var tip = d3.select('#psoViz').append('div')
+    .attr('class', 'tooltip')
+    .style('opacity', 0);
+    
+  ////////////////////////////////////////////////////////
+  // Scale ///////////////////////////////////////////////
+  ////////////////////////////////////////////////////////   
+  	
+	var scaleX = d3.scaleLinear()
+	  .domain([cfg.grid.xMin, cfg.grid.xMax])
+	  .range([0, cfg.width]);
+	  
+	var scaleY = d3.scaleLinear()
+	  .domain([cfg.grid.yMin, cfg.grid.yMax])
+	  .range([0, cfg.height]);  
+	  
 	  
   ////////////////////////////////////////////////////////
   // Contour /////////////////////////////////////////////
@@ -163,24 +166,52 @@ function psoViz(id, expr, options) {
       .on("click", function(d) { console.log(d); })
       .style('fill', function(d) { return d.color; })
       .on('mouseover', function(d) {
+        
         d3.select(this).transition("mouse")
           .duration(0)
           .attr('r', 4 * cfg.radius);
+          
+        tip.transition("mouse")        
+          .duration(0)      
+          .style('opacity', 1);
+        tip.html('<b><font size = "3">x = </font></b>' + d.pbest.x + ', ' + 
+                 '<b><font size = "3">y = </font></b>' + d.pbest.y + ', ' + 
+                 '<b><font size = "3">f(x,y) = </font></b>' + d.pbestEval);
+      })
+      .on('mousemove', function(d) {
+
+        tip.html('<b><font size = "3">x = </font></b>' + d.pbest.x + ', ' + 
+                 '<b><font size = "3">y = </font></b>' + d.pbest.y + ', ' + 
+                 '<b><font size = "3">f(x,y) = </font></b>' + d.pbestEval);
       })
       .on('mouseout', function(d) {
+        
         d3.select(this).transition("mouse")
           .duration(500)
           .attr('r', cfg.radius);
+          
+       tip.transition("mouse")        
+          .duration(500)
+          .style('opacity', 0);          
       });
       
-  // Add Mouseover tooltip d.pbest.x, d.pbest.y, eval(x,y)
-  
+  // Add best position text
+  tipBestX = d3.select("#psoVizResultsX")
+        .text('x = ' + gbest.pbest.x);
+  tipBestY = d3.select("#psoVizResultsY")
+        .text('y = ' + gbest.pbest.y);
+  tipBestF = d3.select("#psoVizResultsF")
+        .text('f(x,y) = ' + gbest.pbestEval);        
+
   ////////////////////////////////////////////////////////
   // Simulation //////////////////////////////////////////
   ////////////////////////////////////////////////////////
     
-  // Add BUTTON to start simulation  
-  psoVizAlgo();
+  // Button to start simulation  
+  d3.select('#start')
+    .on('click', function(d) {
+      psoVizAlgo();
+    });
   
   function psoVizAlgo() { 
     // While Criteria
@@ -196,8 +227,20 @@ function psoViz(id, expr, options) {
             .attr('cx', function(d) { return scaleX(d.pbest.x); })
             .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
             .style('fill', function(d) { return d.color; });
+            
+      tipBestX = tipBestX.transition()
+        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)))
+        .text('x = ' + gbest.pbest.x);  
+        
+      tipBestY = tipBestY.transition()
+        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)))
+        .text('y = ' + gbest.pbest.y);         
+
+      tipBestF = tipBestF.transition()
+        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)))
+        .text('f(x,y) = ' + gbest.pbestEval); 
+        
       ++it;
-      
     }
   }
   
@@ -227,7 +270,7 @@ function psoViz(id, expr, options) {
           
         });
         
-        // Update Position var x = []; (x = pbest.x + velocity.x)
+        // Update Position 
         data.forEach(function(d) {
           d.position.x = d.position.x + d.velocity.x;
           d.position.y = d.position.y + d.velocity.y;
@@ -241,9 +284,9 @@ function psoViz(id, expr, options) {
         
         // Update pbestEval
         data.forEach(function(d) { 
-          d.pbestEval = expr(d.position.x, d.position.y);
+          d.pbestEval = expr(d.pbest.x, d.pbest.y);
         });
-      
+        
         // Reinitialize color
         data.forEach(function(d) {
           d.color = cfg.color;
@@ -251,10 +294,10 @@ function psoViz(id, expr, options) {
         
         // Update gbest -> getgbest
         gbest = getgbest(data);
+        console.log(gbest.pbestEval);
+        console.log(gbest);
   }
-  
-  console.log(data);
-  console.log(gbest);
+
 
   ////////////////////////////////////////////////////////
   // Legend and Buttons //////////////////////////////////
@@ -279,6 +322,7 @@ function psoViz(id, expr, options) {
   	.attr('operator','atop');	  
   
 }
+
 
 
 
