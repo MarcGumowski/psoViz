@@ -89,6 +89,14 @@ h2 {
   margin-right: 0; 
 }
 
+.formLong {
+width: 170px;
+}
+
+.formShort {
+width: 82px;
+}
+
 #container { 
   padding: 30px 0; 
 }
@@ -104,16 +112,16 @@ h2 {
 #container #graph { 
   width: 100%; 
 }
-#container #graph figure div { 
+#container #graph figure #psoViz { 
   float: right; 
   width: 760px; 
-  height: 570px; 
+  height: 640px; 
 }
 #container #graph figure figcaption { 
   display: block; 
   float: left; 
   width: 320px; 
-  height: 530px; 
+  height: 600px; 
   padding: 20px;
   overflow: hidden; 
   color: #BCBCBC; 
@@ -121,6 +129,7 @@ h2 {
   #424242; 
   line-height: 1.6em; 
 }
+
 #container #graph figure h2 { 
   font-size: 42px; 
   font-weight: normal; 
@@ -165,8 +174,11 @@ h2 {
 
 /* Vizualisation */ 
 
-.tooltip {   
+#container figure div .tooltip {
+  width: 760px;
+  height: 20px;
   text-align: center;
   pointer-events: none; 
 }
+
 

@@ -19,22 +19,59 @@
           <figure><div id="psoViz"></div>
             <figcaption>
               <h2>Parameters</h2>
+              
                 <h3>Expression</h3>
-                f(x,y) = 
-                <h3>Search space</h3>
-                x &#8712; [], y &#8712; []
+                  <form>
+                    <table>
+                      <tr>
+                       <td width="85px" align = "right"><label for="expr">f(x,y) = </label></td>
+                       <td><input class = formLong type="text" id="expr" name="expr" value='(1 + Math.pow(x + y + 1, 2) * (19 - 14 * x + 3 * x * x - 14 * y + 6 * x * x + 3 * y * y)) * (30 + Math.pow(2 * x - 3 * y, 2) * (18 - 32 * x + 12 * x * x + 48 * y - 36 * x * y + 27 * y * y))'></td>  
+                      </tr>
+                    </table>
+                  </form>
+                
                 <h3>Optimization parameters</h3> 
-                 Number of iterations <br>
-                 &omega; <form></form> <br>
-                 &phi;<sub>p</sub> <br>
-                 &phi;<sub>g</sub> 
+                 <form>
+                   <table>
+                     <tr>
+                      <td width="85px" align = "right"><label for="xMin">x &#8712;<sub></sub> </label></td>
+                      <td><input class = formShort type="text" id="xMin" name="xMin" value='-2'>
+                      <input class = formShort type="text" id="xMax" name="xMax" value='2'></td>
+                    </tr>
+                    <tr>
+                      <td width="85px" align = "right"><label for="yMin">y &#8712;<sub></sub> </label></td>
+                      <td><input class = formShort type="text" id="yMin" name="yMin" value='-2'>
+                      <input class = formShort type="text" id="yMax" name="yMax" value='1'></td>
+                    </tr> 
+                    <tr>
+                      <td width="85px" align = "right"><label for="pop">Population Size<sub></sub> </label></td>
+                      <td><input class = formLong type="text" id="pop" name="pop" value='50'></td>
+                    </tr>
+                    <tr>
+                      <td width="85px" align = "right"><label for="iteration">Max. iteration<sub></sub> </label></td>
+                      <td><input class = formLong type="text" id="iteration" name="iteration" value="100"></td>
+                    </tr>
+                    <tr>
+                      <td width="85px" align = "right"><label for="name">&omega;<sub></sub> </label></td>
+                      <td><input class = formLong type="text" id="omega" name="omega" value="0.72984"></td>
+                    </tr>
+                    <tr>
+                      <td width="85px" align = "right"><label for="phip">&phi;<sub>p</sub></label></td>
+                      <td><input class = formLong type="text" id="phip" name="phip" value="1.496172"></td>
+                    </tr>
+                    <tr>
+                      <td width="85px" align = "right"><label for="phig">&phi;<sub>g</sub></label></td>
+                      <td><input class = formLong type="text" id="phig" name="phig" value="1.496172"></td>
+                    </tr>
+                   </table>
+                 </form> 
+                 
                 <h3>Simulation</h3>
                  <button class="myButton" type="button" id="refresh">Refresh</button> 
                  <button class="myButton" type="button" id="start">Start</button>
-                 <h3>Results</h3>
-                   <span id = "psoVizResultsX"></span><br>
-                   <span id = "psoVizResultsY"></span><br>
-                   <span id = "psoVizResultsF"></span>
+                 
+                <p id = psoVizResults></p>
+
             </figcaption>
           </figure>
         </section>
@@ -66,8 +103,7 @@
   
     // Define expression
     function expr(x, y) {
-      return (1 + Math.pow(x + y + 1, 2) * (19 - 14 * x + 3 * x * x - 14 * y + 6 * x * x + 3 * y * y))
-          * (30 + Math.pow(2 * x - 3 * y, 2) * (18 - 32 * x + 12 * x * x + 48 * y - 36 * x * y + 27 * y * y));
+      return eval(document.getElementById("expr").value);
     }
 
     /*function expr(x, y) { 
@@ -76,12 +112,15 @@
     
     // Define options
     var options = {
-      grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 1 },
-      iteration: 100,
-      number: 50,
-      w: 0.72984,
-      c1: 2.05 * 0.72984,
-      c2: 2.05 * 0.72984
+      grid: { xMin: parseFloat(document.getElementById("xMin").value), 
+              xMax: parseFloat(document.getElementById("xMax").value), 
+              yMin: parseFloat(document.getElementById("yMin").value), 
+              yMax: parseFloat(document.getElementById("yMax").value) },
+      iteration: parseFloat(document.getElementById("iteration").value),
+      number: parseFloat(document.getElementById("pop").value),
+      w: parseFloat(document.getElementById("omega").value),
+      c1: parseFloat(document.getElementById("phip").value),
+      c2: parseFloat(document.getElementById("phig").value)
     };
     
     // Call psoViz function
@@ -90,11 +129,26 @@
     // Add button that call psoViz to refresh
     d3.select('#refresh')
       .on('click', function(d) {
+        
 	      d3.select('#psoViz').select("svg").remove();
 	      d3.select('#psoViz').select(".tooltip").remove();
-	      d3.select('#psoViz').select(".tooltipBest").remove();
+	      d3.select('#psoVizResults').selectAll('table').remove();
+	      
+        var options = {
+          grid: { xMin: parseFloat(document.getElementById("xMin").value), 
+              xMax: parseFloat(document.getElementById("xMax").value), 
+              yMin: parseFloat(document.getElementById("yMin").value), 
+              yMax: parseFloat(document.getElementById("yMax").value) },
+          iteration: parseFloat(document.getElementById("iteration").value),
+          number: parseFloat(document.getElementById("pop").value),
+          w: parseFloat(document.getElementById("omega").value),
+          c1: parseFloat(document.getElementById("phip").value),
+          c2: parseFloat(document.getElementById("phig").value)
+        };
+  	      
         psoViz("#psoViz", expr, options);
-      });
+      
+    });
   </script>
 
   </body>

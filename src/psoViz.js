@@ -17,7 +17,7 @@ function psoViz(id, expr, options) {
   
   var cfg = {
     width: Math.min(760, window.innerWidth - 10),
-    height: Math.min(570, window.innerHeight - 20),
+    height: Math.min(640, window.innerHeight - 20),
     grid: { xMin: -2, xMax: 2, yMin: -2, yMax: 2 },
     // Vizualization parameters
     radius: 3,
@@ -58,15 +58,23 @@ function psoViz(id, expr, options) {
   // SVG /////////////////////////////////////////////////
   ////////////////////////////////////////////////////////
 	
+	// Svg
 	var svg = d3.select(id).append("svg")
 	    .attr('id', 'psoVizSVG')
 			.attr("width",  cfg.width)
 			.attr("height", cfg.height);
-			
-	var tip = d3.select('#psoViz').append('div')
+	
+	// Tooltip		
+	var tip = d3.select(id).append('div')
     .attr('class', 'tooltip')
     .style('opacity', 0);
-    
+  
+  // Create a table to display the results
+  d3.select("#psoVizResults").append("table");
+  var tipBestX = d3.select("#psoVizResults").selectAll("table").append("tr");
+  var tipBestY = d3.select("#psoVizResults").selectAll("table").append("tr");
+  var tipBestF = d3.select("#psoVizResults").selectAll("table").append("tr");
+                
   ////////////////////////////////////////////////////////
   // Scale ///////////////////////////////////////////////
   ////////////////////////////////////////////////////////   
@@ -171,10 +179,8 @@ function psoViz(id, expr, options) {
       .on('mouseover', function(d) {
         
         d3.select(this).transition("mouse")
-          .duration(250)
+          .duration(50)
           .attr('r', 4 * cfg.radius);
-          
-        console.log(scaleX.invert(d3.select(this).attr("cx")));  
           
         tip.transition("mouse")        
           .duration(0)      
@@ -202,13 +208,10 @@ function psoViz(id, expr, options) {
           .style('opacity', 0);          
       });
       
-  // Add best position text
-  tipBestX = d3.select("#psoVizResultsX")
-        .text('x = ' + gbest.pbest.x);
-  tipBestY = d3.select("#psoVizResultsY")
-        .text('y = ' + gbest.pbest.y);
-  tipBestF = d3.select("#psoVizResultsF")
-        .text('f(x,y) = ' + gbest.pbestEval);        
+  // Add best position text in the results table
+  tipBestX.text('x = ' + gbest.pbest.x);
+  tipBestY.text('y = ' + gbest.pbest.y);
+  tipBestF.text('f(x,y) = ' + gbest.pbestEval);
 
   ////////////////////////////////////////////////////////
   // Simulation //////////////////////////////////////////
@@ -229,27 +232,27 @@ function psoViz(id, expr, options) {
       psoVizLoop(data, cfg);
       // Update viz
       particle = particle
-            .transition()
-            .duration(function(d) { return Math.sqrt(Math.pow(scaleX(d.velocity.x),2) + Math.pow(scaleY(d.velocity.y), 2)); })
+            .transition("simulation")
+            .duration(function(d) { return Math.sqrt(Math.pow(scaleX(d.velocity.x),2) + Math.pow(scaleY(d.velocity.y), 2)) * 0.5; })
             .attr('cx', function(d) { return scaleX(d.pbest.x); })
             .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
             .style('fill', function(d) { return d.color; });
-            
-      tipBestX = tipBestX.transition()
-        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)))
+      
+      // Update results table      
+      tipBestX = tipBestX.transition("simulation")
+        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)) * 0.5)
         .text('x = ' + gbest.pbest.x);  
-        
-      tipBestY = tipBestY.transition()
-        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)))
+      tipBestY = tipBestY.transition("simulation")
+        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)) * 0.5)
         .text('y = ' + gbest.pbest.y);         
-
-      tipBestF = tipBestF.transition()
-        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)))
-        .text('f(x,y) = ' + gbest.pbestEval); 
+      tipBestF = tipBestF.transition("simulation")
+        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)) * 0.5)
+        .text('f(x,y) = ' + gbest.pbestEval);
         
       ++it;
     }
   }
+  
   
   // Function loop (Code can be improved with vector algebra ?)
   function psoVizLoop(data, cfg) {
