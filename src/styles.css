@@ -82,7 +82,7 @@ h2 {
   display:block; 
   float:left; 
   margin:0 20px 0 0;
-  width: 470px; 
+  width: 1120px; 
 }
 
 .lastBox{ 
@@ -130,7 +130,7 @@ h2 {
 #container #content { 
   width: 100%; 
   margin-bottom: 60px; 
-  padding-bottom: 100px; 
+  padding-bottom: 120px; 
   border-bottom: 1px solid #BCBCBC; 
 }
 #container #content section { 
@@ -164,4 +164,9 @@ h2 {
 }
 
 /* Vizualisation */ 
+
+.tooltip {   
+  text-align: center;
+  pointer-events: none; 
+}
 
