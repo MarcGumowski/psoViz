@@ -71,9 +71,10 @@ function psoViz(id, expr, options) {
   
   // Create a table to display the results
   d3.select("#psoVizResults").append("table");
-  var tipBestX = d3.select("#psoVizResults").selectAll("table").append("tr");
-  var tipBestY = d3.select("#psoVizResults").selectAll("table").append("tr");
-  var tipBestF = d3.select("#psoVizResults").selectAll("table").append("tr");
+  var tipBestX = d3.select("#psoVizResults").selectAll("table").append("tr"),
+      tipBestY = d3.select("#psoVizResults").selectAll("table").append("tr"),
+      tipBestF = d3.select("#psoVizResults").selectAll("table").append("tr"),
+      tipBestIt = d3.select("#psoVizResults").selectAll("table").append("tr");
                 
   ////////////////////////////////////////////////////////
   // Scale ///////////////////////////////////////////////
@@ -212,7 +213,8 @@ function psoViz(id, expr, options) {
   tipBestX.text('x = ' + gbest.pbest.x);
   tipBestY.text('y = ' + gbest.pbest.y);
   tipBestF.text('f(x,y) = ' + gbest.pbestEval);
-
+  tipBestIt.text('Iteration: ' + 0);
+  
   ////////////////////////////////////////////////////////
   // Simulation //////////////////////////////////////////
   ////////////////////////////////////////////////////////
@@ -224,10 +226,9 @@ function psoViz(id, expr, options) {
     });
   
   function psoVizAlgo() { 
-    // While Criteria
-    var it = 0;
-    while (it < cfg.iteration) {
-      
+    // Criteria: max iteration
+    for (var it = 0; it < cfg.iteration; ++it) {
+
       // Loop
       psoVizLoop(data, cfg);
       // Update viz
@@ -248,8 +249,9 @@ function psoViz(id, expr, options) {
       tipBestF = tipBestF.transition("simulation")
         .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)) * 0.5)
         .text('f(x,y) = ' + gbest.pbestEval);
-        
-      ++it;
+      tipBestIt = tipBestIt.transition("simulation")
+        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)) * 0.5)
+        .text('Iteration: ' + (it + 1));        
     }
   }
   
