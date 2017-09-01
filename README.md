@@ -8,7 +8,6 @@ keywords:
 - D3
 - D3.js
 - Visualization
-- Viz
 - PSO
 - Particle Swarm Optimization
 ---
