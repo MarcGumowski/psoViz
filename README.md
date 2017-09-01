@@ -1,9 +1,8 @@
 ---
-author: "Marc Gumowski"
 categories:
 - javascript
 - D3.js
-tags:
+keywords:
 - javascript
 - js
 - D3
