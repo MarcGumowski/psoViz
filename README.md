@@ -1,3 +1,19 @@
+---
+author: "Marc Gumowski"
+categories:
+- javascript
+- D3.js
+tags:
+- javascript
+- js
+- D3
+- D3.js
+- Visualization
+- Viz
+- PSO
+- Particle Swarm Optimization
+---
+
 psoViz
 ============
 
