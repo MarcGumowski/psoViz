@@ -1,6 +1,6 @@
 ---
 categories:
-- javascript
+- Javascript
 - D3.js
 keywords:
 - javascript
