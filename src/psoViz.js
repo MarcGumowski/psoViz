@@ -28,7 +28,8 @@ function psoViz(id, expr, options) {
     number: 50,
     w: 0.72984,
     c1: 2.05 * 0.72984,
-    c2: 2.05 * 0.72984
+    c2: 2.05 * 0.72984,
+    animationSpeed: 100
   };
   
   //Put all of the options into a variable called cfg
@@ -232,25 +233,26 @@ function psoViz(id, expr, options) {
       // Loop
       psoVizLoop(data, cfg);
       // Update viz
+      // Duration time for each particle to change is based on the euclidean distance of the particles' velocity. 
       particle = particle
             .transition("simulation")
-            .duration(function(d) { return Math.sqrt(Math.pow(scaleX(d.velocity.x),2) + Math.pow(scaleY(d.velocity.y), 2)) * 0.5; })
+            .duration(function(d) { return distance(d.velocity.x, d.velocity.y) / cfg.animationSpeed; })
             .attr('cx', function(d) { return scaleX(d.pbest.x); })
             .attr('cy', function(d) { return cfg.height - scaleY(d.pbest.y); })
             .style('fill', function(d) { return d.color; });
       
       // Update results table      
       tipBestX = tipBestX.transition("simulation")
-        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)) * 0.5)
+        .duration(distance(gbest.velocity.x, gbest.velocity.y) / cfg.animationSpeed)
         .text('x = ' + gbest.pbest.x);  
       tipBestY = tipBestY.transition("simulation")
-        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)) * 0.5)
+        .duration(distance(gbest.velocity.x, gbest.velocity.y) / cfg.animationSpeed)
         .text('y = ' + gbest.pbest.y);         
       tipBestF = tipBestF.transition("simulation")
-        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)) * 0.5)
+        .duration(distance(gbest.velocity.x, gbest.velocity.y) / cfg.animationSpeed)
         .text('f(x,y) = ' + gbest.pbestEval);
       tipBestIt = tipBestIt.transition("simulation")
-        .duration(Math.sqrt(Math.pow(scaleX(gbest.velocity.x),2) + Math.pow(scaleY(gbest.velocity.y), 2)) * 0.5)
+        .duration(distance(gbest.velocity.x, gbest.velocity.y) / cfg.animationSpeed)
         .text('Iteration: ' + (it + 1));        
     }
   }
@@ -307,6 +309,13 @@ function psoViz(id, expr, options) {
         // Update gbest -> getgbest
         gbest = getgbest(data);
         console.log(gbest.pbestEval);
+  }
+  
+  function distance(x, y) {
+    
+    return Math.sqrt(Math.pow(scaleX(x),2) + Math.pow(scaleY(y), 2));
+    
+    
   }
 
 
