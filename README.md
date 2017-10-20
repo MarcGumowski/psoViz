@@ -1,4 +1,18 @@
-psoViz **(WORK IN PROGRESS)**
+---
+categories:
+- Javascript
+- D3.js
+keywords:
+- javascript
+- js
+- D3
+- D3.js
+- Particle Swarm Optimization
+- PSO
+- Visualization
+---
+
+psoViz
 ============
 
 **psoViz** implements a visualization of particles' behavior in a simple particle swarm optimisation algorithm (pso) using D3.js.

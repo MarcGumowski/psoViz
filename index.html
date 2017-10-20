@@ -25,7 +25,7 @@
                     <table>
                       <tr>
                        <td width="85px" align = "right"><label for="expr">f(x,y) = </label></td>
-                       <td><input class = formLong type="text" id="expr" name="expr" value='(1 + Math.pow(x + y + 1, 2) * (19 - 14 * x + 3 * x * x - 14 * y + 6 * x * x + 3 * y * y)) * (30 + Math.pow(2 * x - 3 * y, 2) * (18 - 32 * x + 12 * x * x + 48 * y - 36 * x * y + 27 * y * y))'></td>  
+                       <td><input class = formLong type="text" id="expr" name="expr" value='(1 + ((x + y + 1) ^ 2) * (19 - 14 * x + 3 * x * x - 14 * y + 6 * x * x + 3 * y * y)) * (30 + ((2 * x - 3 * y)^2) * (18 - 32 * x + 12 * x * x + 48 * y - 36 * x * y + 27 * y * y))'></td>  
                       </tr>
                     </table>
                   </form>
@@ -57,11 +57,11 @@
                     </tr>
                     <tr>
                       <td width="85px" align = "right"><label for="phip">&phi;<sub>p</sub></label></td>
-                      <td><input class = formLong type="text" id="phip" name="phip" value="1.496172"></td>
+                      <td><input class = formLong type="text" id="phip" name="phip" value="1"></td>
                     </tr>
                     <tr>
                       <td width="85px" align = "right"><label for="phig">&phi;<sub>g</sub></label></td>
-                      <td><input class = formLong type="text" id="phig" name="phig" value="1.496172"></td>
+                      <td><input class = formLong type="text" id="phig" name="phig" value="1"></td>
                     </tr>
                    </table>
                  </form> 
@@ -83,8 +83,7 @@
               <h3>Note</h3>
               <p><font color="#3299BB">&omega;</font>, <font color="#3299BB">&phi;<sub>p</sub></font> and <font color="#3299BB">&phi;<sub>g</sub></font> control the behaviour and efficacy of the PSO method. <br>
               They can have a large impact on the optimization performance. Choose them precautiously.</p>
-             <p>To update the expression, please use basic javascript language. <br>
-              For instance, <font color="#3299BB">x&sup2;</font> is written <font color="#3299BB">Math</font>.<font color="#FF9900">pow</font>(x, 2), <font color="#3299BB">&#8730;<span style="text-decoration: overline">x</span></font> is written <font color="#3299BB">Math</font>.<font color="#FF9900">sqrt</font>(x), etc.</p> 
+             <p>To update the expression, please note that <font color="#3299BB">&#8730;<span style="text-decoration: overline">x</span></font> is written <font color="#FF9900">sqrt(x)</font>, <font color="#3299BB">|x|</font> is equal to <font color="#FF9900">abs(x)</font>, and <font color="#3299BB">e<sup>x</sup></font> is written <font color="#FF9900">exp(x)</font>.</p> 
             </article>
             
           </section> 
@@ -94,6 +93,7 @@
     </div>
     
   <!-- JS -->
+  <script src="src/mathjs/math.min.js"></script>  
   <script src="src/d3v4/d3.min.js"></script>
   <script src="src//d3-scale-chromatic.min.js"></script>
   <script src="src/d3-contour.min.js"></script>
@@ -102,18 +102,8 @@
   <script>
   
     // Define expression
-    function expr(x, y) {
-      return eval(document.getElementById("expr").value);
-    }
-
-    /*function expr(x, y) { 
-        return Math.pow(x + 2 * y -7, 2) + Math.pow(2 * x + y - 5, 2);
-    }*/
-    
-    /*function expr(x, y) { 
-        return Math.pow(Math.sin(3 * Math.PI * x), 2) + Math.pow(x - 1, 2) * (1 + Math.pow(Math.sin(3 * Math.PI * y), 2) + 
-        Math.pow(y - 1, 2) * (1 + Math.pow(Math.sin(2 * Math.PI * y), 2)));
-    }*/
+    formula = "".concat('f(x,y) = ', document.getElementById("expr").value);
+    expr = math.parser().eval(formula);
     
     // Define options
     var options = {
@@ -139,6 +129,9 @@
 	      d3.select('#psoViz').select(".tooltip").remove();
 	      d3.select('#psoVizResults').selectAll('table').remove();
 	      
+	      formula = "".concat('f(x,y) = ', document.getElementById("expr").value);
+        expr = math.parser().eval(formula);
+	      
         var options = {
           grid: { xMin: parseFloat(document.getElementById("xMin").value), 
               xMax: parseFloat(document.getElementById("xMax").value), 
@@ -152,8 +145,18 @@
         };
   	      
         psoViz("#psoViz", expr, options);
-      
     });
+    
+    // Example expressions
+    /*function expr(x, y) { 
+        return Math.pow(x + 2 * y -7, 2) + Math.pow(2 * x + y - 5, 2);
+    }*/
+    
+    /*function expr(x, y) { 
+        return Math.pow(Math.sin(3 * Math.PI * x), 2) + Math.pow(x - 1, 2) * (1 + Math.pow(Math.sin(3 * Math.PI * y), 2) + 
+        Math.pow(y - 1, 2) * (1 + Math.pow(Math.sin(2 * Math.PI * y), 2)));
+    }*/
+    
   </script>
 
   </body>
