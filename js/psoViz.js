@@ -29,7 +29,7 @@ function psoViz(id, expr, options) {
     w: 0.72984,
     c1: 2.05 * 0.72984,
     c2: 2.05 * 0.72984,
-    animationSpeed: 10
+    animationSpeed: 2
   };
   
   //Put all of the options into a variable called cfg
